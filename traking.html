@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face traking</title>
+    <style>
+        video, canvas{
+            position: absolute;
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+    
+    <video id="video" width="320" height="240" preload="" autoplay="" loop="" muted=""></video>
+    <canvas id="canvas" width="320" height="240"></canvas>
+    <div id="coord" style="position: absolute; top:250px">
+        X: <span id="coordx"></span><br/>
+        Y: <span id="coordy"></span><br/>
+        Largura: <span id="coordw"></span><br/>
+        Altura: <span id="coordh"></span><br/>
+        Distância: <span id="dist"></span><br/>
+
+    </div>
+    <script src="build/tracking-min.js"></script>
+    <script src="build/data/face-min.js"></script>
+    
+    <script>
+        function init(){
+            const video = document.getElementById("video")
+            const canvas = document.getElementById("canvas")
+            const context = canvas.getContext("2d")
+            var tracker = new tracking.ObjectTracker('face')
+            tracking.track('#video', tracker, {camera:true})
+            tracker.on('track', event =>{
+                //console.log(event)
+                context.clearRect(0,0,canvas.width, canvas.height)
+                event.data.forEach(rect =>{
+                    //console.log(rect)
+                    context.strokeStyle = '#00ff00'
+                    context.lineWidth = 1
+                    context.strokeRect(rect.x,rect.y,rect.width,rect.height)
+                    context.fillStyle = '#00ff00'
+                    context.font = "18px Helvetica"
+                    //context.fillText(`X: ${rect.x}, W: ${rect.width}`, rect.x+rect.width+20, rect.y+20)
+                    //context.fillText(`Y: ${rect.y}, H: ${rect.height}`, rect.x+rect.width+20, rect.y+40)
+                    
+                    let position = [
+                            rect.x,
+                            rect.y,
+                            rect.width,
+                            rect.height
+                    ]
+                    console.log(position)
+
+                    document.getElementById('coordx').innerHTML = position[0]
+                    document.getElementById('coordy').innerHTML = position[1]
+                    document.getElementById('coordw').innerHTML = position[2]
+                    document.getElementById('coordh').innerHTML = position[3]
+                    
+                })
+            })
+            
+            
+        }
+
+        function distancia(){// medir a distancia aproximada. Pesquizar como funciona a perspectiva
+            // distância minima 35 cm = 186px
+            // controle         50 cm = 119px 100 cm = 60px
+            let dist = 
+        }
+        
+        window.onload = init()
+    </script>
+</body>
+</html>
